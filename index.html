@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>班级导航页面</title>
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 配置Tailwind自定义主题 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#36CFC9',
+            accent: '#FF7D00',
+            dark: '#1D2129',
+            light: '#F2F3F5'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .class-card-hover {
+        @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+      }
+      .img-frame {
+        @apply border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-light/50 transition-all duration-300 hover:border-primary/70;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans text-dark">
+  <!-- 页面容器 -->
+  <div class="min-h-screen flex flex-col">
+    
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-primary flex items-center">
+          <i class="fa fa-graduation-cap mr-3"></i>
+          班级导航中心
+        </h1>
+        <div class="hidden md:flex items-center space-x-6">
+          <a href="#" class="text-gray-600 hover:text-primary transition-colors">首页</a>
+          <a href="#" class="text-gray-600 hover:text-primary transition-colors">关于我们</a>
+          <a href="#" class="text-gray-600 hover:text-primary transition-colors">联系我们</a>
+        </div>
+        <button class="md:hidden text-gray-600">
+          <i class="fa fa-bars text-xl"></i>
+        </button>
+      </div>
+    </header>
+    
+    <!-- 主要内容区 -->
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+      
+      <!-- 欢迎信息 -->
+      <section class="text-center mb-12">
+        <h2 class="text-[clamp(1.25rem,2.5vw,1.75rem)] font-semibold mb-4">欢迎访问班级导航页面</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">选择您要访问的班级，或浏览下方的班级图片展示</p>
+      </section>
+      
+      <!-- 班级导航卡片 -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <!-- 数媒高考班 -->
+        <a href="index1.html" class="block">
+          <div class="bg-white rounded-xl shadow-md p-6 class-card-hover">
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+              <i class="fa fa-film text-2xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">数媒高考班</h3>
+            <p class="text-gray-600 mb-4">数字媒体艺术高考相关课程与资讯</p>
+            <div class="inline-flex items-center text-primary font-medium">
+              进入班级 <i class="fa fa-arrow-right ml-2"></i>
+            </div>
+          </div>
+        </a>
+        
+        <!-- 工业机器人高考班 -->
+        <a href="index2.html" class="block">
+          <div class="bg-white rounded-xl shadow-md p-6 class-card-hover">
+            <div class="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
+              <i class="fa fa-cogs text-2xl text-secondary"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">工业机器人高考班</h3>
+            <p class="text-gray-600 mb-4">工业机器人技术高考相关课程与资讯</p>
+            <div class="inline-flex items-center text-secondary font-medium">
+              进入班级 <i class="fa fa-arrow-right ml-2"></i>
+            </div>
+          </div>
+        </a>
+        
+        <!-- 工业机器人4班 -->
+        <a href="robotics-4.html" class="block">
+          <div class="bg-white rounded-xl shadow-md p-6 class-card-hover">
+            <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mb-4">
+              <i class="fa fa-robot text-2xl text-accent"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">工业机器人4班</h3>
+            <p class="text-gray-600 mb-4">工业机器人技术专业4班课程与活动</p>
+            <div class="inline-flex items-center text-accent font-medium">
+              进入班级 <i class="fa fa-arrow-right ml-2"></i>
+            </div>
+          </div>
+        </a>
+      </section>
+      
+      <!-- 图片展示区域 -->
+      <section>
+        <h2 class="text-[clamp(1.25rem,2.5vw,1.75rem)] font-semibold mb-6 text-center">班级图片展示</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- 图片框1 - 数媒高考班 -->
+          <div class="img-frame">
+            <div class="aspect-video relative">
+              <!-- 替换src中的""为您的本地图片路径，例：src="images/digital-media.jpg" -->
+              <img src="image/1.jpg" alt="数媒高考班图片" class="w-full h-full object-cover">
+              <!-- 提示图标和文字默认隐藏，图片加载后无需显示 -->
+              <div class="absolute inset-0 flex items-center justify-center text-gray-400 hidden">
+                <i class="fa fa-picture-o text-4xl"></i>
+                <p class="absolute bottom-3 text-sm">数媒高考班图片</p>
+              </div>
+            </div>
+            <div class="p-4 bg-white">
+              <h3 class="font-medium text-primary">数媒高考班活动照片</h3>
+              <p class="text-sm text-gray-500 mt-1">替换img标签src属性添加本地图片</p>
+            </div>
+          </div>
+          
+          <!-- 图片框2 - 工业机器人高考班 -->
+          <div class="img-frame">
+            <div class="aspect-video relative">
+              <!-- 替换src中的""为您的本地图片路径，例：src="images/robotics-gaokao.jpg" -->
+              <img src="image/2.jpg" alt="工业机器人高考班图片" class="w-full h-full object-cover">
+              <!-- 提示图标和文字默认隐藏 -->
+              <div class="absolute inset-0 flex items-center justify-center text-gray-400 hidden">
+                <i class="fa fa-picture-o text-4xl"></i>
+                <p class="absolute bottom-3 text-sm">工业机器人高考班图片</p>
+              </div>
+            </div>
+            <div class="p-4 bg-white">
+              <h3 class="font-medium text-secondary">工业机器人高考班实训照片</h3>
+              <p class="text-sm text-gray-500 mt-1">替换img标签src属性添加本地图片</p>
+            </div>
+          </div>
+          
+          <!-- 图片框3 - 工业机器人4班 -->
+          <div class="img-frame">
+            <div class="aspect-video relative">
+              <!-- 替换src中的""为您的本地图片路径，例：src="images/robotics-4.jpg" -->
+              <img src="image/3.jpg" alt="工业机器人4班图片" class="w-full h-full object-cover">
+              <!-- 提示图标和文字默认隐藏 -->
+              <div class="absolute inset-0 flex items-center justify-center text-gray-400 hidden">
+                <i class="fa fa-picture-o text-4xl"></i>
+                <p class="absolute bottom-3 text-sm">工业机器人4班图片</p>
+              </div>
+            </div>
+            <div class="p-4 bg-white">
+              <h3 class="font-medium text-accent">工业机器人4班课堂照片</h3>
+              <p class="text-sm text-gray-500 mt-1">替换img标签src属性添加本地图片</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-8 mt-16">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="mb-4 md:mb-0">
+            <p class="text-gray-400">© 2023 班级导航中心 版权所有</p>
+          </div>
+          <div class="flex space-x-6">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fa fa-weixin text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fa fa-weibo text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fa fa-envelope text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  
+  <!-- JavaScript -->
+  <script>
+    // 为图片框添加点击提示（帮助用户替换本地图片）
+    document.querySelectorAll('.img-frame').forEach(frame => {
+      frame.addEventListener('click', function() {
+        alert('请将本地图片路径替换到当前图片框内img标签的src属性中');
+      });
+    });
+    
+    // 平滑滚动效果
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
