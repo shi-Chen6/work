@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技感作业提醒系统（圆周环绕版）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #050a30 0%, #000000 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* 背景科技感元素 */
+        .bg-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .bg-elements::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: rgba(0, 191, 255, 0.1);
+            filter: blur(100px);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 191, 255, 0.1) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(0, 191, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        /* 标题样式 */
+        .title {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #00bfff;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.7);
+            z-index: 1;
+        }
+        
+        /* 球体容器（关键：相对定位，作为圆周运动的参照） */
+        .sphere-container {
+            position: relative;
+            width: clamp(300px, 75vw, 650px);
+            height: clamp(300px, 75vw, 650px);
+            z-index: 1;
+        }
+        
+        .sphere {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1a2a6c, #b21f1f, #fdbb2d);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.5),
+                        inset 0 0 50px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 圆周环绕的学生名单（每个名字绝对定位） */
+        .student-list {
+            list-style: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .student-item {
+            position: absolute;
+            font-size: clamp(0.8rem, 2vw, 1.2rem);
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            transform: translate(-50%, -50%); /* 让名字中心对齐计算出的位置 */
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+        
+        /* 中间大写提名容器（突出显示） */
+        .center-nominee {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .nominee-name {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-weight: bold;
+            color: #00ffdd;
+            text-transform: uppercase; /* 强制大写 */
+            text-shadow: 0 0 15px rgba(0, 255, 221, 0.8),
+                        0 0 30px rgba(0, 255, 221, 0.5);
+            margin-bottom: 0.5rem;
+        }
+        
+        .nominee-label {
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: #ffffff;
+            opacity: 0.8;
+        }
+        
+        /* 音频控制按钮 */
+        .audio-control {
+            margin-top: 2rem;
+            z-index: 1;
+        }
+        
+        .control-btn {
+            background: rgba(0, 191, 255, 0.2);
+            border: 1px solid rgba(0, 191, 255, 0.5);
+            color: #00bfff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-btn:hover {
+            background: rgba(0, 191, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.7);
+        }
+        
+        .control-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* 提示文本 */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 191, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 1;
+            border: 1px solid rgba(0, 191, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-elements">
+        <div class="grid"></div>
+    </div>
+    
+    <h1 class="title">作业速速提交</h1>
+    
+    <div class="sphere-container">
+        <div class="sphere">
+            <!-- 圆周环绕的学生名单 -->
+            <ul class="student-list" id="studentList">
+                <li class="student-item">连晟宇</li>
+                <li class="student-item">黄锦煌</li>
+                <li class="student-item">蔡政毅</li>
+                <li class="student-item">陈楷涵</li>
+                <li class="student-item">傅梓杰</li>
+                <li class="student-item">陈邦德</li>
+                <li class="student-item">汪洋</li>
+                <li class="student-item">范嘉文</li>
+                <li class="student-item">吴烁晗</li>
+                <li class="student-item">吴杰烽</li>
+                <li class="student-item">黄凯帆</li>
+                <li class="student-item">詹委铃</li>
+                <li class="student-item">李欣怡</li>
+                <li class="student-item">徐漪婕</li>
+                <li class="student-item">黄依菡</li>
+                <li class="student-item">徐思怡</li>
+                <li class="student-item">杨婉妍</li>
+                <li class="student-item">王晓君</li>
+                <li class="student-item">陈钰涵</li>
+            </ul>
+            
+            <!-- 中间大写提名区域 -->
+            <div class="center-nominee" id="centerNominee">
+                <div class="nominee-label">当前提醒</div>
+                <div class="nominee-name" id="nomineeName">连晟宇</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="audio-control">
+        <button class="control-btn" id="audioBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            播放提醒音频
+        </button>
+    </div>
+    
+    <div class="notification">
+        快交作业！快交作业！快交作业！
+    </div>
+    
+    <audio id="reminderAudio" loop>
+        <source src="reminder.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放
+    </audio>
+    
+    <script>
+        // 获取DOM元素
+        const studentList = document.getElementById('studentList');
+        const studentItems = document.querySelectorAll('.student-item');
+        const nomineeName = document.getElementById('nomineeName');
+        const audioBtn = document.getElementById('audioBtn');
+        const reminderAudio = document.getElementById('reminderAudio');
+        const sphere = document.querySelector('.sphere');
+        
+        // 核心参数配置
+        const studentCount = studentItems.length; // 学生总数
+        const radiusRatio = 0.4; // 名字到球心的距离比例（0.4 = 球体半径的40%）
+        let currentNomineeIndex = 0; // 当前中间提名的索引
+        
+        // 1. 初始化：计算每个学生名字的圆周位置，并启动环绕动画
+        function initCircularPosition() {
+            const sphereRadius = sphere.offsetWidth / 2; // 球体半径
+            const nameRadius = sphereRadius * radiusRatio; // 名字环绕半径
+            
+            studentItems.forEach((item, index) => {
+                // 计算每个名字的初始角度（平均分配圆周，单位：弧度）
+                const initialAngle = (index / studentCount) * 2 * Math.PI;
+                
+                // 圆周运动函数：根据角度计算x/y坐标
+                function updatePosition(angle) {
+                    const x = sphereRadius + nameRadius * Math.cos(angle); // 球心x + 水平偏移
+                    const y = sphereRadius + nameRadius * Math.sin(angle); // 球心y + 垂直偏移
+                    item.style.left = `${x}px`;
+                    item.style.top = `${y}px`;
+                }
+                
+                // 初始定位
+                updatePosition(initialAngle);
+                
+                // 启动环绕动画（每帧更新角度，实现平滑旋转）
+                let currentAngle = initialAngle;
+                function animate() {
+                    currentAngle += 0.005; // 旋转速度（值越大越快）
+                    if (currentAngle > 2 * Math.PI) currentAngle = 0; // 角度重置，避免溢出
+                    updatePosition(currentAngle);
+                    requestAnimationFrame(animate);
+                }
+                animate();
+            });
+        }
+        
+        // 2. 每隔0.3秒更新中间大写提名
+        function startNomineeCycle() {
+            setInterval(() => {
+                // 切换到下一个学生（循环）
+                currentNomineeIndex = (currentNomineeIndex + 1) % studentCount;
+                const currentName = studentItems[currentNomineeIndex].textContent;
+                nomineeName.textContent = currentName;
+                
+                // 可选：让提名名字有闪烁强调效果
+                nomineeName.style.opacity = 0.6;
+                setTimeout(() => nomineeName.style.opacity = 1, 100);
+            }, 300); // 0.3秒 = 300毫秒
+        }
+        
+        // 3. 音频控制（保留原有功能）
+        let isPlaying = false;
+        audioBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                reminderAudio.pause();
+                audioBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    播放提醒音频
+                `;
+            } else {
+                reminderAudio.play().catch(error => {
+                    console.log('播放需要用户交互:', error);
+                    alert('请点击按钮手动开启音频提醒');
+                });
+                audioBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-3h-6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-2" />
+                    </svg>
+                    暂停提醒音频
+                `;
+            }
+            isPlaying = !isPlaying;
+        });
+        
+        // 4. 页面加载完成后初始化
+        window.addEventListener('load', () => {
+            initCircularPosition();
+            startNomineeCycle();
+            // 预加载音频，解决自动播放限制
+            document.addEventListener('click', () => reminderAudio.load(), { once: true });
+        });
+    </script>
+</body>
+</html>
